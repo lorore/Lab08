@@ -7,6 +7,10 @@ package it.polito.tdp.extflightdelays;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import org.jgrapht.Graph;
+import org.jgrapht.graph.DefaultWeightedEdge;
+
+import it.polito.tdp.extflightdelays.model.Airport;
 import it.polito.tdp.extflightdelays.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -35,7 +39,35 @@ public class FXMLController {
 
     @FXML
     void doAnalizzaAeroporti(ActionEvent event) {
-    	//TODO
+    	this.txtResult.clear();
+    	String input=this.distanzaMinima.getText();
+    	if( input.isEmpty()) {
+    		this.txtResult.setText("Non è stato inserito alcun valore");
+    		return;
+    	}
+    	double x=0.0;
+    	try {
+    		 x=Double.parseDouble(input);
+    		
+    	}catch(NumberFormatException e) {
+    		this.txtResult.setText("Il valore inserito non è un numero");
+    		return;
+    	}
+    	
+    	Graph<Airport, DefaultWeightedEdge> result=this.model.creaGrafo(x);
+    	
+    	this.txtResult.setText("Numero vertici: "+result.vertexSet().size()+"\n");
+    	this.txtResult.appendText("Numero di archi: "+result.edgeSet().size()+"\n");
+    	this.txtResult.appendText("ELENCO ROTTE: \n");
+    	StringBuilder sb=new StringBuilder();
+    	for(DefaultWeightedEdge e: result.edgeSet()) {
+    		String s1=result.getEdgeSource(e).getAirportName();
+    		String s2=result.getEdgeTarget(e).getAirportName();
+    		sb.append(s1+"-"+s2+": "+result.getEdgeWeight(e));
+    		sb.append("\n");
+    	}
+    	
+    	this.txtResult.appendText(sb.toString());
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete

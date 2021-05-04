@@ -43,11 +43,13 @@ public class DAO {
 	public List<Adiacenza> getConnessioni(double d){
 	String sql="SELECT f.ORIGIN_AIRPORT_ID, f.DESTINATION_AIRPORT_ID, AVG(f.DISTANCE) AS media "
 			+ "FROM flights AS f "
-			+ "GROUP BY  f.ORIGIN_AIRPORT_ID, f.DESTINATION_AIRPORT_ID ";
+			+ "GROUP BY  f.ORIGIN_AIRPORT_ID, f.DESTINATION_AIRPORT_ID "
+			+"HAVING media>? ";
 	List<Adiacenza> result=new ArrayList<Adiacenza>();
 	try {
 		Connection conn = ConnectDB.getConnection();
 		PreparedStatement st = conn.prepareStatement(sql);
+		st.setDouble(1, d);
 		ResultSet rs = st.executeQuery();
 
 		while (rs.next()) {
